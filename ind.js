@@ -4,6 +4,7 @@ const todoButton= document.querySelector(".todo-button")
 const todoList= document.querySelector(".todo-list")
 const filterOption=document.querySelector(".filter-todo")
 //onclick task will bw added
+document.addEventListener('DOMContentLoaded',gettodos)
 todoButton.addEventListener('click',addtodo);
 todoList.addEventListener('click',deleteCheck);
 //filterOption.addEventListener('click',filtertodo);
@@ -37,7 +38,8 @@ function addtodo(e)
     todoDiv.appendChild(newtodo)
     //create check button
     // save to local storage
-    //saveLocaltodo(todoInput.value);
+
+    saveLocaltodo(todoInput.value);
     const completeButton = document.createElement("Button")
     completeButton.innerHTML="<i class='fas fa-check'></i>";
     completeButton.classList.add("complete-btn")
@@ -65,6 +67,7 @@ function deleteCheck(e)
         const todo=item.parentElement;
         //Animation
         todo.classList.add("fall")
+        removeLocalTodos(todo);
         todo.addEventListener("transitionend",function(){
             todo.remove;
         })
@@ -126,7 +129,60 @@ function saveLocaltodo(todo)
         todos= JSON.parse(localStorage.getItem('todos'));
     }
     todos.push(todo);
-    localStorage.setItem("todos",JSON.stringyfy(todos))
+    let fix= JSON.stringify(todos);
+    localStorage.setItem("todos",fix);
+}
+function gettodos()
+{
+    let todos;
+    if(localStorage.getItem('todos')===null)
+    {
+        todos=[];
+    }
+    else
+    {
+        todos= JSON.parse(localStorage.getItem('todos'));
+    }
+    todos.forEach(function(todo){
+        const todoDiv=document.createElement("div")
+        todoDiv.classList.add('todo')
+        //create li
+        const newtodo= document.createElement("li")
+        newtodo.innerText= todo
+        newtodo.classList.add("todo-item")
+        todoDiv.appendChild(newtodo)
+        //create check button 
+        const completeButton = document.createElement("Button")
+        completeButton.innerHTML="<i class='fas fa-check'></i>";
+        completeButton.classList.add("complete-btn")
+        todoDiv.appendChild(completeButton)
+        //create delete button
+        const deleteButton = document.createElement("Button")
+        deleteButton.innerHTML="<i class='fas fa-trash'></i>";
+        deleteButton.classList.add("delete-btn")
+        todoDiv.appendChild(deleteButton)
+        //append to list
+        todoList.appendChild(todoDiv)
+        
+    });
+
+}
+function removeLocalTodos(todo)
+{
+    let todos;
+    if(localStorage.getItem('todos')===null)
+    {
+        todos=[];
+    }
+    else
+    {
+        todos= JSON.parse(localStorage.getItem('todos'));
+    }
+    const todoIndex=todo.children[0].innerText;
+    todos.splice(todos.indexOf(todoIndex),1);
+    let fix= JSON.stringify(todos);
+    localStorage.setItem("todos",fix);
+
 }
 
 
@@ -252,4 +308,3 @@ var btnRemove=document.getElementById('remove-item');
   })
 
 */
-
